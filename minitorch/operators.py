@@ -89,16 +89,16 @@ def inv(x: float) -> float:
     return 1 / x
 
 
-def log_back(x: float, y) -> float:
+def log_back(x: float, y: float) -> Any:
     return y / x
 
 
-def inv_back(x: float, y) -> float:
+def inv_back(x: float, y: float) -> Any:
     # return neg(y) / x ** 2
     return -y / x**2
 
 
-def relu_back(x: float, y) -> float:
+def relu_back(x: float, y: float) -> Any:
     return (x > 0) * y
 
 
@@ -128,8 +128,8 @@ def map(f: Any) -> Any:
     return wrapper
 
 
-def zipWith(f):
-    def wrapper(x, y):
+def zipWith(f: Any) -> Any:
+    def wrapper(x: Any, y: Any) -> Any:
         return [f(a, b) for a, b in zip(x, y)]
 
     return wrapper
@@ -149,13 +149,13 @@ def negList(x: Any) -> Any:
     return map(neg)(x)
 
 
-def addLists(x, y) -> Any:
+def addLists(x: Any, y: Any) -> Any:
     return zipWith(add)(x, y)
 
 
-def sum(x) -> Any:
+def sum(x: Any) -> Any:
     return reduce(add, 0)(x)
 
 
-def prod(x):
+def prod(x: Any) -> Any:
     return reduce(mul, 1)(x)

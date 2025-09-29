@@ -58,7 +58,7 @@ class Variable(Protocol):
     def chain_rule(self, d_output: Any) -> Iterable[Tuple["Variable", Any]]:
         pass
 
-def bfs(var: Variable, order: list, vis: list):
+def bfs(var: Any, order: List[Variable], vis: List[int]) -> None:
     if var.unique_id in vis:
         return
     vis.append(var.unique_id)
@@ -79,8 +79,8 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
-    vis = []
-    order = []
+    vis: Any = []
+    order: Any = []
     bfs(variable, order, vis)
     return reversed(order)
 

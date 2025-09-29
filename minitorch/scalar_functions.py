@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import minitorch
+from typing import Any
 
 from . import operators
 from .autodiff import Context
@@ -85,12 +86,12 @@ class Log(ScalarFunction):
     "Log function $f(x) = log(x)$"
 
     @staticmethod
-    def forward(ctx: Context, a: float) -> float:
+    def forward(ctx: Context, a: float) -> Any:
         ctx.save_for_backward(a)
         return operators.log(a)
 
     @staticmethod
-    def backward(ctx: Context, d_output: float) -> float:
+    def backward(ctx: Context, d_output: float) -> Any:
         (a,) = ctx.saved_values
         return operators.log_back(a, d_output)
 
@@ -161,7 +162,7 @@ class ReLU(ScalarFunction):
         return operators.relu(a)
 
     @staticmethod
-    def backward(ctx: Context, d_output: float) -> float:
+    def backward(ctx: Context, d_output: float) -> Any:
         (a,) = ctx.saved_values
         return operators.relu_back(a, d_output)
 
