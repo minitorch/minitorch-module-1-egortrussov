@@ -1,6 +1,7 @@
 """Collection of the core mathematical operators used throughout the code base."""
 
 import math
+from typing import Any
 
 # ## Task 0.1
 
@@ -35,7 +36,7 @@ def mul(x: float, y: float) -> float:
     return x * y
 
 
-def id(x):
+def id(x: float) -> float:
     return x
 
 
@@ -120,8 +121,8 @@ def relu_back(x: float, y) -> float:
 # - prod: take the product of lists
 
 
-def map(f):
-    def wrapper(x):
+def map(f: Any) -> Any:
+    def wrapper(x: Any) -> Any:
         return [f(i) for i in x]
 
     return wrapper
@@ -134,8 +135,8 @@ def zipWith(f):
     return wrapper
 
 
-def reduce(f, initializer):
-    def wrapper(x):
+def reduce(f: Any, initializer: Any) -> Any:
+    def wrapper(x: Any) -> Any:
         val = initializer
         for i in x:
             val = f(val, i)
@@ -144,15 +145,15 @@ def reduce(f, initializer):
     return wrapper
 
 
-def negList(x):
+def negList(x: Any) -> Any:
     return map(neg)(x)
 
 
-def addLists(x, y):
+def addLists(x, y) -> Any:
     return zipWith(add)(x, y)
 
 
-def sum(x):
+def sum(x) -> Any:
     return reduce(add, 0)(x)
 
 
