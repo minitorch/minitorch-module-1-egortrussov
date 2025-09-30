@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Iterable, List, Tuple
+from collections import defaultdict
 
 from typing_extensions import Protocol
 
@@ -22,8 +23,15 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
     Returns:
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
-    # TODO: Implement for Task 1.1.
-    raise NotImplementedError("Need to implement for Task 1.1")
+    vals1, vals2 = [], []
+    for i in range(len(vals)):
+        if i == arg:
+            vals1.append(vals[i] + epsilon)
+            vals2.append(vals[i] - epsilon)
+        else:
+            vals1.append(vals[i] + 0)
+            vals2.append(vals[i] - 0)
+    return (f(*vals1) - f(*vals2)) / (2 * epsilon)
 
 
 variable_count = 1
@@ -50,6 +58,16 @@ class Variable(Protocol):
     def chain_rule(self, d_output: Any) -> Iterable[Tuple["Variable", Any]]:
         pass
 
+def bfs(var: Any, order: List[Variable], vis: List[int]) -> None:
+    if var.unique_id in vis:
+        return
+    vis.append(var.unique_id)
+    
+    if var.history is not None:
+        for input_var in var.history.inputs:
+            bfs(input_var, order, vis)
+    
+    order.append(var)
 
 def topological_sort(variable: Variable) -> Iterable[Variable]:
     """
@@ -61,8 +79,10 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    vis: Any = []
+    order: Any = []
+    bfs(variable, order, vis)
+    return reversed(order)
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -76,8 +96,22 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    vars_sorted = topological_sort(variable)
+
+    node2der = defaultdict(float)
+    node2der[variable.unique_id] = deriv
+    
+    for var in vars_sorted:
+        if var.is_leaf():
+            # print(var)
+            continue
+        current_deriv = node2der.get(var.unique_id, 0.0)
+        
+        for input_var, grad in var.chain_rule(current_deriv):
+            if input_var.is_leaf():
+                input_var.accumulate_derivative(grad)
+            else:
+                node2der[input_var.unique_id] += grad
 
 
 @dataclass
